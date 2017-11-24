@@ -27,9 +27,6 @@ fn train(text: &String) -> MarkovModel {
         }
     }
 
-    // sort the pairs by their first element
-    pairs.sort_by(|a, b| a.0.cmp(b.0));
-
     MarkovModel {
         starts: starts,
         pairs: pairs,
