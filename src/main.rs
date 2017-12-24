@@ -17,13 +17,13 @@ fn train(text: &String) -> MarkovModel {
 
     for line in text.lines() {
         let iter1 = line.split_whitespace();
-        let iter2 = line.split_whitespace().skip(1);
+        let iter2 = iter1.clone().skip(1);
         let word_pairs = iter1.zip(iter2);
-        for (i, (first, next)) in word_pairs.enumerate() {
+        for (i, (word1, word2)) in word_pairs.enumerate() {
             if i == 0 {
-                starts.push(first);
+                starts.push(word1);
             }
-            pairs.push((first, next));
+            pairs.push((word1, word2));
         }
     }
 
@@ -42,6 +42,7 @@ fn generate(model: &MarkovModel, n_words: u32) -> String {
     let mut result = String::new();
     let mut rng = rand::thread_rng();
 
+    // Begin with a random starter word
     let mut curr_word = get_random_word(&model.starts, &mut rng);
     result.push_str(curr_word);
     result.push(' ');
@@ -67,8 +68,8 @@ fn generate(model: &MarkovModel, n_words: u32) -> String {
 }
 
 fn main() {
-    let mut buf = String::new();
     // Usage: markov <filename1> [<filename2> ...]
+    let mut buf = String::new();
     for arg in env::args().skip(1) {
         let mut file = File::open(arg).expect("could not open file");
         file.read_to_string(&mut buf).expect("could not read {}");
